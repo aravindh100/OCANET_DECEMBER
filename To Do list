@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO DO LIST</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+
+        #content-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 400px; /* Increased width for additional content */
+        }
+
+        #todo-container {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        #task-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            cursor: pointer;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-item span {
+            flex: 1;
+        }
+
+        .task-item input[type="checkbox"] {
+            margin-left: 10px;
+        }
+
+        #task-input,
+        #deadline-input,
+        #priority-input,
+        #label-input {
+            width: calc(100% - 16px);
+            padding: 8px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #add-button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #todo-container h2 {
+            text-align: center;
+        }
+
+        #progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #eee;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        #progress-bar span {
+            display: block;
+            height: 100%;
+            background-color: #4caf50;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var addButton = document.getElementById('add-button');
+            var taskInput = document.getElementById('task-input');
+            var deadlineInput = document.getElementById('deadline-input');
+            var priorityInput = document.getElementById('priority-input');
+            var labelInput = document.getElementById('label-input');
+            var taskList = document.getElementById('task-list');
+            var progressBar = document.getElementById('progress-bar');
+            var taskIdCounter = 1;
+            var completedTasks = 0;
+
+            addButton.addEventListener('click', function () {
+                var taskText = taskInput.value.trim();
+                var deadline = deadlineInput.value.trim();
+                var priority = priorityInput.value.trim();
+                var label = labelInput.value.trim();
+
+                if (taskText !== '') {
+                    var newTask = document.createElement('li');
+                    newTask.className = 'task-item';
+                    newTask.id = 'task-' + taskIdCounter;
+                    newTask.innerHTML = '<input type="checkbox"><span>' + taskText + '</span>';
+                    taskList.appendChild(newTask);
+
+                    // Click event listener for redirecting to task description
+                    newTask.addEventListener('click', function () {
+                        var taskId = newTask.id;
+                        window.location.href = 'task-description.html?task=' + taskId;
+                    });
+
+                    taskInput.value = '';
+                    deadlineInput.value = '';
+                    priorityInput.value = '';
+                    labelInput.value = '';
+
+                    taskIdCounter++;
+                }
+
+                // Update progress bar
+                updateProgressBar();
+            });
+
+            function updateProgressBar() {
+                // Calculate and update progress
+                var totalTasks = taskIdCounter - 1;
+                var progressPercentage = (completedTasks / totalTasks) * 100;
+                progressBar.innerHTML = '<span style="width: ' + progressPercentage + '%"></span>';
+            }
+
+            // Example: Simulate completing a task
+            // You might replace this with actual logic when a task is marked as complete
+            document.addEventListener('click', function (event) {
+                if (event.target.type === 'checkbox') {
+                    completedTasks++;
+                    updateProgressBar();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+
+    <div id="content-container">
+        <div id="todo-container">
+            <h2>TO DO LIST</h2>
+            <ul id="task-list"></ul>
+            <input type="text" id="task-input" placeholder="Task">
+            <input type="text" id="deadline-input" placeholder="Deadline">
+            <input type="text" id="priority-input" placeholder="Priority">
+            <input type="text" id="label-input" placeholder="Label">
+            <button id="add-button">Add Task</button>
+            <div id="progress-bar"></div>
+        </div>
+    </div>
+
+</body>
+</html>
